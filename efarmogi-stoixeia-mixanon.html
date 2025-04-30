@@ -1,0 +1,206 @@
+
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Άσκηση - Στοιχεία Μηχανών</title>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: #f0f4f8;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+    }
+
+    h2, h3 {
+      text-align: center;
+      color: #2c3e50;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 16px;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 12px;
+      width: 100%;
+      background-color: #3498db;
+      color: white;
+      font-size: 18px;
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    .result {
+      margin-top: 25px;
+      padding: 15px;
+      background-color: #ecf0f1;
+      border-radius: 10px;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.1);
+      font-size: 16px;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 12px;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Υπολογιστής Άσκησης<br>Στοιχεία Μηχανών</h2>
+    <p>Δώσε δύο από τα παρακάτω και άφησε ένα κενό για να υπολογιστεί:</p>
+
+    <label>Ροπή Στρέψης Mt (dan·cm):</label>
+    <input type="number" id="mt" placeholder="π.χ. 2500">
+
+    <label>Ισχύς P (ΗΡ):</label>
+    <input type="number" id="p" placeholder="π.χ. 10">
+
+    <label>Στροφές n (rpm):</label>
+    <input type="number" id="n" placeholder="π.χ. 1500">
+
+    <button onclick="solve()">Υπολογισμός Άσκησης</button>
+
+    <div class="result" id="output">Το αποτέλεσμα θα εμφανιστεί εδώ.</div>
+  </div>
+
+  <div class="container">
+    <h3>Απλές Πράξεις</h3>
+    <p>Διάλεξε πράξη και δώσε τους αριθμούς:</p>
+
+    <label>Αριθμός 1:</label>
+    <input type="number" id="num1" placeholder="π.χ. 5">
+
+    <label>Πράξη:</label>
+    <select id="operation">
+      <option value="+">Πρόσθεση (+)</option>
+      <option value="-">Αφαίρεση (−)</option>
+      <option value="*">Πολλαπλασιασμός (×)</option>
+      <option value="/">Διαίρεση (÷)</option>
+    </select>
+
+    <label>Αριθμός 2:</label>
+    <input type="number" id="num2" placeholder="π.χ. 3">
+
+    <button onclick="calculate()">Υπολογισμός Πράξης</button>
+
+    <div class="result" id="mathResult">Εδώ θα εμφανιστεί η πράξη και η εξήγηση.</div>
+  </div>
+
+  <div class="footer">© Εφαρμογή Στοιχείων Μηχανών - ΕΠΑΛ</div>
+
+  <script>
+    function solve() {
+      const mt = parseFloat(document.getElementById("mt").value);
+      const p = parseFloat(document.getElementById("p").value);
+      const n = parseFloat(document.getElementById("n").value);
+      const output = document.getElementById("output");
+      let result = "";
+
+      const known = [!isNaN(mt), !isNaN(p), !isNaN(n)].filter(x => x).length;
+
+      if (known < 2) {
+        output.innerHTML = "⚠️ Δώσε τουλάχιστον δύο τιμές για να γίνει ο υπολογισμός.";
+        return;
+      }
+
+      if (isNaN(mt)) {
+        const mt_calc = (71620 * p) / n;
+        result = `
+          Υπολογισμός ροπής στρέψης (Mt):<br>
+          ➤ Mt = (71620 × ${p}) / ${n} = <b>${mt_calc.toFixed(2)} dan·cm</b>
+        `;
+      } else if (isNaN(p)) {
+        const p_calc = (mt * n) / 71620;
+        result = `
+          Υπολογισμός ισχύος (P):<br>
+          ➤ P = (${mt} × ${n}) / 71620 = <b>${p_calc.toFixed(2)} HP</b>
+        `;
+      } else if (isNaN(n)) {
+        const n_calc = (71620 * p) / mt;
+        result = `
+          Υπολογισμός στροφών (n):<br>
+          ➤ n = (71620 × ${p}) / ${mt} = <b>${n_calc.toFixed(2)} rpm</b>
+        `;
+      } else {
+        result = "⚠️ Όλες οι τιμές είναι συμπληρωμένες. Άφησε μία κενή για να γίνει ο υπολογισμός.";
+      }
+
+      output.innerHTML = result;
+    }
+
+    function calculate() {
+      const num1 = parseFloat(document.getElementById("num1").value);
+      const num2 = parseFloat(document.getElementById("num2").value);
+      const operation = document.getElementById("operation").value;
+      const resultBox = document.getElementById("mathResult");
+
+      if (isNaN(num1) || isNaN(num2)) {
+        resultBox.innerHTML = "⚠️ Συμπλήρωσε και τους δύο αριθμούς.";
+        return;
+      }
+
+      let result, explanation;
+
+      switch(operation) {
+        case "+":
+          result = num1 + num2;
+          explanation = `Πρόσθεση: ${num1} + ${num2} = <b>${result}</b>`;
+          break;
+        case "-":
+          result = num1 - num2;
+          explanation = `Αφαίρεση: ${num1} - ${num2} = <b>${result}</b>`;
+          break;
+        case "*":
+          result = num1 * num2;
+          explanation = `Πολλαπλασιασμός: ${num1} × ${num2} = <b>${result}</b>`;
+          break;
+        case "/":
+          if (num2 === 0) {
+            resultBox.innerHTML = "⚠️ Δεν μπορείς να διαιρέσεις με το 0!";
+            return;
+          }
+          result = num1 / num2;
+          explanation = `Διαίρεση: ${num1} ÷ ${num2} = <b>${result}</b>`;
+          break;
+      }
+
+      resultBox.innerHTML = explanation;
+    }
+  </script>
+</body>
+</html>
